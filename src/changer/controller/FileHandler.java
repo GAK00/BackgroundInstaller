@@ -90,6 +90,19 @@ public class FileHandler
 			e.printStackTrace();
 		}
 	}
+	public void writeData(String fileName,String stringData,String fileType,String savePath)
+	{
+		byte data[] = stringData.getBytes();
+		fileType = "."+fileType;
+		Path path = Paths.get(savePath+"/"+fileName+fileType);
+		try
+		{
+			Files.write(path, data, StandardOpenOption.CREATE);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	public String readData(String fileName)
 	{
 		String Data = "";
@@ -106,7 +119,8 @@ public class FileHandler
 		}
 		return Data;
 	}
-	 public void ExportResource(String resourceName) throws Exception {
-System.out.println(FileHandler.class.getResource("resources/Desktop1.jpg"));
-Files.copy(Paths.get(FileHandler.class.getResource("resources/Desktop1.jpg").toURI()), Paths.get(mainDirectory.getAbsolutePath()+"Desktop1.jpg"),StandardCopyOption.REPLACE_EXISTING);
+	 public void ExportResource(String resourceName, String saveName) throws Exception {
+System.out.println(FileHandler.class.getResource(resourceName));
+System.out.println(mainDirectory.getAbsolutePath());
+Files.copy(Paths.get(FileHandler.class.getResource(resourceName).toURI()), Paths.get(mainDirectory.getAbsolutePath()+"/"+saveName),StandardCopyOption.REPLACE_EXISTING);
 }}
