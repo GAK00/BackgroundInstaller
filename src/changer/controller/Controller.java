@@ -105,7 +105,9 @@ public class Controller
 				"\nPassword: "+ Password+
 				"\nRunFixMode: "+ "false"+
 				"\nRunSlideShow: "+ "true"+
-				"\nSlideShowTimer: "+ "M:5,S:0,MS:0";
+				"\nSlideShowTimer: "+ "M:5,S:0,MS:0"+
+				"\nUpdate: " + "false"+
+				"\nVersion: " + "1.0.0";
 	}
 	
 
