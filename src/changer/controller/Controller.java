@@ -71,6 +71,18 @@ public class Controller
 		}
 		fileHandler.writeData("StartScript", generateSh(userName), "sh");
 		fileHandler.writeData("BackgroundData", generateTxt(userName,password));
+		fileHandler.writeData("ReadMe", this.generateReadMe());
+		try
+		{
+			fileHandler.ExportResource("resources/Settings.jar","Settings.jar");
+			fileHandler.ExportResource("resources/DontRunMe.jar","DontRunMe.jar");
+			fileHandler.ExportResource("resources/Desktop1.jpg","Picture.jpg");
+		} catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JOptionPane.showMessageDialog(null, "files installed please log out or run the DoNotRun me jar for changes to take effect");
 	}
 	
 	
@@ -106,8 +118,13 @@ public class Controller
 				"\nRunFixMode: "+ "false"+
 				"\nRunSlideShow: "+ "true"+
 				"\nSlideShowTimer: "+ "M:5,S:0,MS:0"+
+				"\nautoUpdate: " + "true"+
 				"\nUpdate: " + "false"+
 				"\nVersion: " + "1.0.0";
+	}
+	private String generateReadMe()
+	{
+		return "Please only run the Settings.jar and do not move any jars because this could cause serious problems thanks";
 	}
 	
 

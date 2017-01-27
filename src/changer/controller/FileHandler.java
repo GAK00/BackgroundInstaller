@@ -1,21 +1,22 @@
 package changer.controller;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.Map;
 
-public class FileHandler 
+public class FileHandler
 {
 
 	private File mainDirectory;
@@ -25,14 +26,15 @@ public class FileHandler
 		try
 		{
 			String parentPath = getParentDirectory();
-			String Path = parentPath +"/"+"Backgrounds"+"/";
-			if(Files.exists(Paths.get(Path)))
+			String Path = parentPath + "/" + "Backgrounds" + "/";
+			if (Files.exists(Paths.get(Path)))
+			{
+				System.out.println("exists");
+				mainDirectory = new File(Path);
+			} else
 			{
 				mainDirectory = new File(Path);
-			}
-			else
-			{
-				mainDirectory = new File(Path);
+				System.out.println("making crap");
 				mainDirectory.mkdir();
 			}
 		} catch (UnsupportedEncodingException e)
@@ -44,12 +46,11 @@ public class FileHandler
 	public FileHandler(String path)
 	{
 		String parentPath = path;
-		String Path = parentPath +"/";//+"Backgrounds"+"/";
-		if(Files.exists(Paths.get(Path)))
+		String Path = parentPath + "/";// +"Backgrounds"+"/";
+		if (Files.exists(Paths.get(Path)))
 		{
 			mainDirectory = new File(Path);
-		}
-		else
+		} else
 		{
 			mainDirectory = new File(Path);
 			mainDirectory.mkdir();
@@ -64,11 +65,12 @@ public class FileHandler
 		parentPath = new File(childFilePath).getParentFile().getPath();
 		return parentPath;
 	}
-	public void writeData(String fileName,String stringData)
+
+	public void writeData(String fileName, String stringData)
 	{
 		byte data[] = stringData.getBytes();
 		String fileType = ".txt";
-		Path path = Paths.get(mainDirectory.getPath()+"/"+fileName+fileType);
+		Path path = Paths.get(mainDirectory.getPath() + "/" + fileName + fileType);
 		try
 		{
 			Files.write(path, data, StandardOpenOption.CREATE);
@@ -77,11 +79,12 @@ public class FileHandler
 			e.printStackTrace();
 		}
 	}
-	public void writeData(String fileName,String stringData,String fileType)
+
+	public void writeData(String fileName, String stringData, String fileType)
 	{
 		byte data[] = stringData.getBytes();
-		fileType = "."+fileType;
-		Path path = Paths.get(mainDirectory.getPath()+"/"+fileName+fileType);
+		fileType = "." + fileType;
+		Path path = Paths.get(mainDirectory.getPath() + "/" + fileName + fileType);
 		try
 		{
 			Files.write(path, data, StandardOpenOption.CREATE);
@@ -90,11 +93,12 @@ public class FileHandler
 			e.printStackTrace();
 		}
 	}
-	public void writeData(String fileName,String stringData,String fileType,String savePath)
+
+	public void writeData(String fileName, String stringData, String fileType, String savePath)
 	{
 		byte data[] = stringData.getBytes();
-		fileType = "."+fileType;
-		Path path = Paths.get(savePath+"/"+fileName+fileType);
+		fileType = "." + fileType;
+		Path path = Paths.get(savePath + "/" + fileName + fileType);
 		try
 		{
 			Files.write(path, data, StandardOpenOption.CREATE);
@@ -103,13 +107,14 @@ public class FileHandler
 			e.printStackTrace();
 		}
 	}
+
 	public String readData(String fileName)
 	{
 		String Data = "";
-		Path path = Paths.get(mainDirectory.getPath()+"/"+fileName+".txt");
+		Path path = Paths.get(mainDirectory.getPath() + "/" + fileName + ".txt");
 		try
 		{
-			Data = new String(Files.readAllBytes(path),"UTF-8");
+			Data = new String(Files.readAllBytes(path), "UTF-8");
 		} catch (UnsupportedEncodingException e)
 		{
 			e.printStackTrace();
@@ -119,8 +124,18 @@ public class FileHandler
 		}
 		return Data;
 	}
-	 public void ExportResource(String resourceName, String saveName) throws Exception {
-System.out.println(FileHandler.class.getResource(resourceName));
-System.out.println(mainDirectory.getAbsolutePath());
-Files.copy(Paths.get(FileHandler.class.getResource(resourceName).toURI()), Paths.get(mainDirectory.getAbsolutePath()+"/"+saveName),StandardCopyOption.REPLACE_EXISTING);
-}}
+
+	public void ExportResource(String resourceName, String saveName) throws Exception
+	{
+		System.out.println(FileHandler.class.getResource(resourceName));
+		System.out.println(mainDirectory.getAbsolutePath());
+		System.out.println(FileHandler.class.getResource(resourceName).toURI());
+
+		final Map<String, String> env = new HashMap<>();
+		final String[] array = FileHandler.class.getResource(resourceName).toURI().toString().split("!");
+		final FileSystem fs = FileSystems.newFileSystem(URI.create(array[0]), env);
+		final Path path = fs.getPath(array[1]);
+		Files.copy(path, Paths.get(mainDirectory.getAbsolutePath() + "/" + saveName), StandardCopyOption.REPLACE_EXISTING);
+		fs.close();
+	}
+}
